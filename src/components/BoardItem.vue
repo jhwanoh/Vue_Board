@@ -3,7 +3,7 @@
     <td>{{ id }}</td>
     <td>{{ title }}</td>
     <td>{{ writer }}</td>
-    <td>{{ date }}</td>
+    <td id="dateTd">{{ date }}</td>
     <td>{{ visitCount }}</td>
   </tr>
 </template>

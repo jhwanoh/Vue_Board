@@ -4,10 +4,11 @@
     <hr class="my-4" />
 
     <form @submit.prevent="edit">
-      <input type="visitCount" v-model="form.visitCount" hidden />
+      <input id="visitCount" v-model="form.visitCount" hidden />
+      <input id="id" v-model="form.id" hidden />
       <div class="mb-3">
         <input
-          type="writer"
+          type="text"
           class="form-control"
           id="writer"
           placeholder="작성자명"
@@ -16,7 +17,7 @@
       </div>
       <div class="mb-3">
         <input
-          type="title"
+          type="text"
           class="form-control"
           id="title"
           placeholder="제목"
@@ -57,40 +58,20 @@ const route = useRoute();
 const router = useRouter();
 const id = route.params.id;
 
-var today = new Date();
-var dd = today.getDate();
-var mm = today.getMonth() + 1; //January is 0!
-var yyyy = today.getFullYear();
-var hour = today.getHours();
-var minute = today.getMinutes();
-
-if (dd < 10) {
-  dd = "0" + dd;
-}
-if (mm < 10) {
-  mm = "0" + mm;
-}
-if (hour < 10) {
-  hour = "0" + hour;
-}
-if (minute < 10) {
-  minute = "0" + minute;
-}
-today = yyyy + "-" + mm + "-" + dd + " " + hour + ":" + minute;
-
 const form = ref({
   title: null,
   content: null,
   writer: null,
   visitCount: null,
-  date: today,
+  id: null,
 });
 
 const fetchBoard = async () => {
   const { data } = await getBoardById(id);
-  setForm(data);
+  setForm(data[0]);
 };
-const setForm = ({ title, content, writer, visitCount }) => {
+const setForm = ({ id, title, content, writer, visitCount }) => {
+  form.value.id = id;
   form.value.title = title;
   form.value.content = content;
   form.value.writer = writer;
@@ -100,7 +81,7 @@ fetchBoard();
 
 const edit = async () => {
   try {
-    await updateBoard(id, { ...form.value });
+    await updateBoard({ ...form.value });
     router.push({ name: "boardDetail", params: { id } });
   } catch (error) {
     console.error(error);

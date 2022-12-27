@@ -39,13 +39,20 @@ import { useRouter } from "vue-router";
 import { getBoardById } from "@/api/board";
 import { ref } from "vue";
 import { deleteBoard } from "../../api/board";
+import dayjs from "dayjs";
 
 const props = defineProps({
   id: String,
 });
 
 const router = useRouter();
-const board = ref({});
+const board = ref({
+  title: null,
+  content: null,
+  writer: null,
+  date: null,
+  viewCount: null,
+});
 
 /**
  * ref
@@ -60,7 +67,7 @@ const board = ref({});
 const fetchBoard = async () => {
   try {
     const { data } = await getBoardById(props.id);
-    setBoard(data);
+    setBoard(data[0]);
   } catch (error) {
     console.error(error);
   }
@@ -69,8 +76,11 @@ const setBoard = ({ title, content, writer, date, visitCount }) => {
   board.value.title = title;
   board.value.content = content;
   board.value.writer = writer;
-  board.value.date = date;
   board.value.visitCount = visitCount;
+
+  var dateFormat = dayjs(date);
+
+  board.value.date = dateFormat.format("YYYY년MM월DD일 HH시mm분");
 };
 fetchBoard();
 

@@ -4,10 +4,15 @@
     <form @submit.prevent>
       <div class="row g-3 mt-4 mb-4">
         <div class="col-6">
-          <input type="text" class="form-control" />
+          <input
+            type="text"
+            class="form-control"
+            id="_search"
+            v-model="params._search"
+          />
         </div>
         <div class="col-auto">
-          <button class="btn btn-outline-success" type="submit">Search</button>
+          <!-- <button class="btn btn-outline-success" type="submit">Search</button> -->
         </div>
         <div class="col-2">
           <select v-model="params._limit" class="form-select">
@@ -38,13 +43,12 @@
           :id="board.id"
           :title="board.title"
           :writer="board.writer"
-          :date="board.date"
+          :date="dayjs(board.date).format('YYYY년MM월DD일 HH시mm분')"
           :visitCount="board.visitCount"
         ></BoardItem>
       </tbody>
     </table>
-
-    <nav class="mt-5" aria-label="Page navigation example">
+    <!-- <nav class="mt-5" aria-label="Page navigation example">
       <ul class="pagination justify-content-center">
         <li class="page-item">
           <a
@@ -81,57 +85,54 @@
           </a>
         </li>
       </ul>
-    </nav>
+    </nav> -->
   </div>
 </template>
 
 <script setup>
 import BoardItem from "@/components/BoardItem.vue";
-import { getBoards } from "@/api/board";
+import { getBoards, getTotalCount } from "@/api/board";
 import { ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import { computed } from "vue";
+import dayjs from "dayjs";
+
+const count = getTotalCount();
+console.log(count);
 
 const router = useRouter();
 const boards = ref([]);
-
 const params = ref({
-  _sort: "id",
-  _order: "desc",
-  _limit: 3,
+  // _sort: "id",
+  // _order: "desc",
   _page: 1,
-  title_like: "",
+  _limit: 3,
+  _search: "",
 });
 //페이징
-const totalCount = ref(0);
-const pageCount = computed(() =>
-  Math.ceil(totalCount.value / params.value._limit)
-);
+// const totalCount = ref(0);
+// const pageCount = computed(() =>
+//   Math.ceil(totalCount.value / params.value._limit)
+// );
 
 const fetchBoard = async () => {
-  //axios사용전
-  // boards.value = getBoards();
-
   try {
-    const { data, headers } = await getBoards(params.value);
+    const { data } = await getBoards(params.value);
+    console.log(params.value);
+
     boards.value = data;
-    totalCount.value = headers["x-total-count"];
+    // totalCount.value = headers["x-total-count"];
+
+    // totalCount.value = getTotalCount();
   } catch (error) {
     console.error(error);
   }
-
-  // getBoards()
-  //   .then((response) => {
-  //     console.log("response: ", response);
-  //   })
-  //   .catch((error) => {
-  //     console.log("error: ", error);
-  //   });
 };
+
 fetchBoard();
 
+console.log(count);
 watchEffect(fetchBoard);
-
 const goPage = (id) => {
   router.push({
     name: "boardDetail",

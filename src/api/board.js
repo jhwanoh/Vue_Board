@@ -1,26 +1,34 @@
-import { posts } from ".";
-import axios from "axios";
+import { boards } from "./boardAxios";
 
 export function getBoards(params) {
-  //axios 사용 전
-  // return board;
-  // return axios.get("http://localhost:8080/boardListPage", { params });
-  return axios.get("http://localhost:8080/board", { params });
+  return boards.get("", { params });
 }
 
 export function getBoardById(id) {
-  //axios 사용 전
-  // const numberId = parseInt(id);
-  // return board.find((item) => item.id === numberId);
-  return posts.get(`/${id}`);
+  return boards.get(`/detail/${id}`);
+}
+
+export function getTotalCount() {
+  console.log(boards.get("/totalCount"));
+  return boards.get("/totalCount");
 }
 
 export function createBoard(data) {
-  return posts.post("http://localhost:8080/boards/add", data);
+  return boards.post("/add", null, {
+    params: { title: data.title, content: data.content, writer: data.writer },
+  });
 }
-export function updateBoard(id, data) {
-  return posts.patch(`/${id}`, data);
+export function updateBoard(data) {
+  return boards.post("/modify", null, {
+    params: {
+      title: data.title,
+      content: data.content,
+      writer: data.writer,
+      id: data.id,
+      visitCount: data.visitCount,
+    },
+  });
 }
 export function deleteBoard(id) {
-  return posts.delete(`/${id}`);
+  return boards.delete(`/delete/${id}`);
 }

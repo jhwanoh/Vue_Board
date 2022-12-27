@@ -6,7 +6,7 @@ import BoardAddView from "@/views/board/BoardAddView.vue";
 import BoardDetailView from "@/views/board/BoardDetailView.vue";
 import BoardModifyView from "@/views/board/BoardModifyView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
-import HomeView from "@/views HomeView.vue";
+import HomeView from "@/views/HomeView.vue";
 
 const routes = [
   {
