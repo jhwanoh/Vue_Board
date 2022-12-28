@@ -61,28 +61,6 @@ const form = ref({
   writer: null,
 });
 
-// var today = new Date();
-// var dd = today.getDate();
-// var mm = today.getMonth() + 1; //January is 0!
-// var yyyy = today.getFullYear();
-// var hour = today.getHours();
-// var minute = today.getMinutes();
-
-// if (dd < 10) {
-//   dd = "0" + dd;
-// }
-// if (mm < 10) {
-//   mm = "0" + mm;
-// }
-// if (hour < 10) {
-//   hour = "0" + hour;
-// }
-// if (minute < 10) {
-//   minute = "0" + minute;
-// }
-
-// today = yyyy + "-" + mm + "-" + dd + " " + hour + ":" + minute;
-
 const save = () => {
   try {
     createBoard({

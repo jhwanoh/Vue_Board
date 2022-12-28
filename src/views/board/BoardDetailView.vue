@@ -31,15 +31,64 @@
         <button class="btn btn-outline-danger" @click="remove">삭제</button>
       </div>
     </div>
+    <div>
+      <table class="table text-center">
+        <thead>
+          <tr>
+            <th class="col-1" hidden>번호</th>
+            <th class="col-1" hidden>글번호</th>
+            <th class="col-1">작성자</th>
+            <th class="col-6">내용</th>
+            <th class="col-2">작성일</th>
+            <th class="col-1"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <ReviewItem
+            v-for="review in reviews"
+            :key="review.id"
+            :id="review.id"
+            :bid="review.bid"
+            :writer="review.writer"
+            :content="review.content"
+            :date="dayjs(review.date).format('YYYY년MM월DD일 HH시mm분')"
+          ></ReviewItem>
+        </tbody>
+      </table>
+    </div>
+
+    <form @submit.prevent="save">
+      <div class="mt-4 text-center d-flex flex-column bd-highlight">
+        <input
+          id="writer"
+          v-model="form.writer"
+          class="mb-1"
+          type="text"
+          placeholder="작성자명을 입력해주세요"
+        />
+        <textarea
+          id="content"
+          v-model="form.content"
+          class="mb-1"
+          style="white-space: pre"
+          placeholder="내용을 입력해 주세요"
+        ></textarea>
+        <button class="btn btn-outline-success">등록</button>
+      </div>
+    </form>
   </div>
 </template>
 
 <script setup>
+import ReviewItem from "@/components/ReviewItem.vue";
 import { useRouter } from "vue-router";
 import { getBoardById } from "@/api/board";
 import { ref } from "vue";
 import { deleteBoard } from "../../api/board";
+import { addReview } from "../../api/review";
 import dayjs from "dayjs";
+
+const reviews = ref([]);
 
 const props = defineProps({
   id: String,
@@ -52,6 +101,7 @@ const board = ref({
   writer: null,
   date: null,
   viewCount: null,
+  id: null,
 });
 
 /**
@@ -64,22 +114,24 @@ const board = ref({
  * 장점) form.title, form.content
  */
 
+var bid = null;
 const fetchBoard = async () => {
   try {
     const { data } = await getBoardById(props.id);
-    setBoard(data[0]);
+    setBoard(data.board[0]);
+    reviews.value = data.review;
   } catch (error) {
     console.error(error);
   }
 };
-const setBoard = ({ title, content, writer, date, visitCount }) => {
+const setBoard = ({ title, content, writer, date, visitCount, id }) => {
   board.value.title = title;
   board.value.content = content;
   board.value.writer = writer;
   board.value.visitCount = visitCount;
-
+  board.value.id = id;
   var dateFormat = dayjs(date);
-
+  bid = id;
   board.value.date = dateFormat.format("YYYY년MM월DD일 HH시mm분");
 };
 fetchBoard();
@@ -106,6 +158,28 @@ const goModifyPage = () => {
     name: "boardModify",
     params: { id: props.id },
   });
+};
+
+const form = ref({
+  bid: null,
+  content: null,
+  writer: null,
+});
+
+const save = () => {
+  try {
+    addReview({
+      ...form.value,
+      bid: bid,
+    });
+    console.log(...form.value);
+    router.push({
+      name: "boardDetail",
+      params: { id: props.id },
+    });
+  } catch (error) {
+    console.error(error);
+  }
 };
 </script>
 

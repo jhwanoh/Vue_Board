@@ -91,14 +91,13 @@
 
 <script setup>
 import BoardItem from "@/components/BoardItem.vue";
-import { getBoards, getTotalCount } from "@/api/board";
+import { getBoards } from "@/api/board";
 import { ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
-import { computed } from "vue";
 import dayjs from "dayjs";
 
-const count = getTotalCount();
-console.log(count);
+// const count = getTotalCount();
+// console.log(count);
 
 const router = useRouter();
 const boards = ref([]);
@@ -131,7 +130,7 @@ const fetchBoard = async () => {
 
 fetchBoard();
 
-console.log(count);
+// console.log(count);
 watchEffect(fetchBoard);
 const goPage = (id) => {
   router.push({

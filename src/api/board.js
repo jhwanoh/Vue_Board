@@ -8,10 +8,10 @@ export function getBoardById(id) {
   return boards.get(`/detail/${id}`);
 }
 
-export function getTotalCount() {
-  console.log(boards.get("/totalCount"));
-  return boards.get("/totalCount");
-}
+// export function getTotalCount() {
+//   console.log(boards.get("/totalCount"));
+//   return boards.get("/totalCount");
+// }
 
 export function createBoard(data) {
   return boards.post("/add", null, {
